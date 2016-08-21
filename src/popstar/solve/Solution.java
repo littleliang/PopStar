@@ -1,13 +1,11 @@
 package popstar.solve;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
-import java.util.Scanner;
 
 import popstar.util.Util;
 
@@ -70,7 +68,6 @@ public class Solution {
 			count++;
 			if(count % 1000 == 0){
 				System.out.println("count: " + count);
-//				System.out.println(curMaxPath);
 			}
 			Layout tempLayout = layout;
 			List<ArrayList<Node>> validConnectList = tempLayout.getValidConnect();
@@ -123,14 +120,6 @@ public class Solution {
 	}
 
 	public static void main(String[] args) throws FileNotFoundException {
-//		Scanner scanner = new Scanner(new FileInputStream("C:/Users/suruiliang/Desktop/in"));
-//		int[][] input = new int[10][10];
-//		for(int i = 0; i < 10; i++){
-//			for(int j = 0; j < 10; j++){
-//				input[i][j] = scanner.nextInt();
-//			}
-//		}
-//		scanner.close();
 		Random ra =new Random();
 		int score = 0;
 		int count = 0;

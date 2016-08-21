@@ -235,16 +235,7 @@ public class Layout {
 	}
 	
 	public static void main(String[] args) throws FileNotFoundException {
-		Scanner scanner = new Scanner(new FileInputStream("C:/Users/suruiliang/Desktop/in"));
-		int[][] input = new int[10][10];
-		for(int i = 0; i < 10; i++){
-			for(int j = 0; j < 10; j++){
-				input[i][j] = scanner.nextInt();
-			}
-		}
-		Layout layout = new Layout(input);
-
-		scanner.close();
+		
 	}
 
 }
