@@ -2,6 +2,7 @@ package popstar.solve;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -124,6 +125,7 @@ public class Solution {
 		int score = 0;
 		int count = 0;
 		Solution solution;
+		ArrayList<Integer> scoreList = new ArrayList<>();
 		int[][] input = new int[10][10];
 		for(int k = 0; k < 100; k++){
 			for(int i = 0; i < 10; i++){
@@ -132,10 +134,11 @@ public class Solution {
 				}
 			}
 			solution = new Solution(new Layout(input));
+			scoreList.add(solution.curMaxScore);
 			score += solution.curMaxScore;
 			count++;
 		}
-		
+		Collections.sort(scoreList);
 		
 		System.out.println("average score: " + score / count);
 	}
