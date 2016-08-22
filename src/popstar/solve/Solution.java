@@ -121,7 +121,7 @@ public class Solution {
 		Solution solution;
 		ArrayList<Integer> scoreList = new ArrayList<>();
 		int[][] input = new int[10][10];
-		for(int k = 0; k < 10; k++){
+		for(int k = 0; k < 100; k++){
 			for(int i = 0; i < 10; i++){
 				for(int j = 0; j < 10; j++){
 					input[i][j] = ra.nextInt(5) + 1;
