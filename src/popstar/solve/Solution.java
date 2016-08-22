@@ -19,6 +19,10 @@ public class Solution {
 	private HashMap<Layout, ArrayList<Node>> curTotalPath = new HashMap<>();
 	private HashSet<Layout> layoutSet = new HashSet<>();
 	
+	public Layout getCurMaxScoreLayout(){
+		return curMaxScoreLayout;
+	}
+	
 	public Solution(Layout layout){
 		rootLayout = layout;
 		layoutSet.add(layout);
