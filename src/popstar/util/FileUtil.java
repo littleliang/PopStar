@@ -26,8 +26,6 @@ public class FileUtil {
 	}
 	
 	public static void main(String[] args) throws IOException {
-		FileUtil fileUtil = new FileUtil("C:/Users/suruiliang/Desktop/in.png", 10, 10);
-		System.out.println(fileUtil);
 	}
 	
 	
