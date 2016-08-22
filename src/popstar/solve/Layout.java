@@ -32,7 +32,6 @@ public class Layout {
 	private int[] curSingleColCount;
 	private double[] curSingleColRatio;
 	private double curLayoutScore;
-	private Layout beforeLayout;
 
 	public Layout(int[][] input){
 		this.length = input.length;
@@ -53,14 +52,6 @@ public class Layout {
 		}
 		calCurLayoutScore();
 		
-	}
-	
-	public void setBeforeLayout(Layout beforeLayout) {
-		this.beforeLayout = beforeLayout;
-	}
-	
-	public Layout getBeforeLayout() {
-		return beforeLayout;
 	}
 	
 	public ArrayList<Node> getMaxConnect() {
