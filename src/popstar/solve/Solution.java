@@ -1,6 +1,5 @@
 package popstar.solve;
 
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -12,27 +11,27 @@ import popstar.util.Util;
 
 public class Solution {
 	private int curMaxScore = 0;
-	private int count = 0;
+	private int first3StepCount = 0;
 	private Layout curMaxScoreLayout;
-	private Layout originLayout;
+	private Layout rootLayout;
 	private ArrayList<Node> curMaxPath = new ArrayList<>();
 	private HashMap<Layout, Integer> curTotalScore = new HashMap<>();
 	private HashMap<Layout, ArrayList<Node>> curTotalPath = new HashMap<>();
 	private HashSet<Layout> layoutSet = new HashSet<>();
 	
 	public Solution(Layout layout){
-		originLayout = layout;
+		rootLayout = layout;
 		layoutSet.add(layout);
 		curTotalScore.put(layout, 0);
-		InitFirst3Step(originLayout, 0);
-		System.out.println(layoutSet.size());
+		InitFirst3Step(rootLayout, 0);
 		getMaxScore();
 		System.out.println("score: " + curMaxScore);
+		System.out.println("path: " + curMaxPath);
 	}
 	
 	private void InitFirst3Step(Layout ancestor, int layer){
-		if(layer == 3 || count >= 1000){
-			count++;
+		if(layer == 3 || first3StepCount >= 1000){
+			first3StepCount++;
 			return;
 		}
 		layoutSet.remove(ancestor);
@@ -46,17 +45,17 @@ public class Solution {
 			return;
 		}
 		for(ArrayList<Node> nodeList : validConnectList){
-			int[][] temp = Util.removeConnect(ancestor.getInput(), nodeList, ancestor.getLength(), ancestor.getWidth());
-			Layout layout = new Layout(temp);
+			int[][] nextInput = Util.removeConnect(ancestor.getInput(), nodeList, ancestor.getLength(), ancestor.getWidth());
+			Layout layout = new Layout(nextInput);
 			layoutSet.add(layout);
 			layout.setBeforeLayout(ancestor);
 			curTotalScore.put(layout, curTotalScore.get(ancestor) + Util.getConnectScore(nodeList));
-			ArrayList<Node> tempList = new ArrayList<>();
+			ArrayList<Node> pathLayout = new ArrayList<>();
 			if (curTotalPath.containsKey(ancestor)){
-				tempList.addAll(curTotalPath.get(ancestor));
+				pathLayout.addAll(curTotalPath.get(ancestor));
 			}
-			tempList.add(nodeList.get(0));
-			curTotalPath.put(layout, tempList);
+			pathLayout.add(nodeList.get(0));
+			curTotalPath.put(layout, pathLayout);
 			InitFirst3Step(layout, layer + 1);
 		}
 		return;
@@ -64,70 +63,65 @@ public class Solution {
 	}
 	
 	public void getMaxScore(){
-		int count = 0;
 		for(Layout layout : layoutSet){
-			count++;
-			if(count % 1000 == 0){
-				System.out.println("count: " + count);
-			}
-			Layout tempLayout = layout;
-			List<ArrayList<Node>> validConnectList = tempLayout.getValidConnect();
-			while(tempLayout.getValidConnect().size() != 0){
-				double layoutScore = 0 - Double.MAX_VALUE;
-				Layout tempMax = null;
-				ArrayList<Node> tempNodeList = null;
-				ArrayList<Node> tempList = new ArrayList<>();
+			Layout nextLayout = layout;
+			List<ArrayList<Node>> validConnectList = nextLayout.getValidConnect();
+			while(nextLayout.getValidConnect().size() != 0){
+				double inLoopMaxLayoutScore = 0 - Double.MAX_VALUE;
+				Layout inLoopMaxLayout = null;
+				ArrayList<Node> inLoopConnectNodeList = null;
+				ArrayList<Node> inLoopMaxPathLayout = new ArrayList<>();
 				
 				for(ArrayList<Node> nodeList : validConnectList){
-					int[][] tempInput = Util.removeConnect(tempLayout.getInput(), nodeList, tempLayout.getLength(), tempLayout.getWidth());
-					Layout temp = new Layout(tempInput);
-					if(temp.getCurLayoutScore() > layoutScore){
-						tempMax = temp;
-						layoutScore = temp.getCurLayoutScore();
-						tempNodeList = nodeList;
+					int[][] nextInput = Util.removeConnect(nextLayout.getInput(), nodeList, nextLayout.getLength(), nextLayout.getWidth());
+					Layout inLoopNextLayout = new Layout(nextInput);
+					if(inLoopNextLayout.getCurLayoutScore() > inLoopMaxLayoutScore){
+						inLoopMaxLayout = inLoopNextLayout;
+						inLoopMaxLayoutScore = inLoopNextLayout.getCurLayoutScore();
+						inLoopConnectNodeList = nodeList;
 					}
 				}
-				if (curTotalPath.containsKey(tempLayout)){
-					tempList.addAll(curTotalPath.get(tempLayout));
+				if (curTotalPath.containsKey(nextLayout)){
+					inLoopMaxPathLayout.addAll(curTotalPath.get(nextLayout));
 				}
-				tempList.add(tempNodeList.get(0));
-				curTotalPath.put(tempMax, tempList);
-				curTotalPath.remove(tempLayout);
-				curTotalScore.put(tempMax, curTotalScore.get(tempLayout) + Util.getConnectScore(tempNodeList));
-				curTotalScore.remove(tempLayout);
-				tempMax.setBeforeLayout(tempLayout);
-				if(layoutScore == Double.MAX_VALUE && tempMax.getMaxConnect().size() != 0){
-					ArrayList<Node> temptempList = new ArrayList<>();
-					int[][] tempInput = Util.removeConnect(tempMax.getInput(), tempMax.getMaxConnect(), tempMax.getLength(), tempMax.getWidth());
-					Layout temp = new Layout(tempInput);
-					temp.setBeforeLayout(tempMax);
-					temptempList.addAll(tempList);
-					temptempList.add(tempMax.getMaxConnect().get(0));
-					curTotalPath.put(temp, temptempList);
-					curTotalPath.remove(tempMax);
-					curTotalScore.put(temp, curTotalScore.get(tempMax) + Util.getConnectScore(tempMax.getMaxConnect()));
-					curTotalScore.remove(tempMax);
-					tempMax = temp;
+				inLoopMaxPathLayout.add(inLoopConnectNodeList.get(0));
+				curTotalPath.put(inLoopMaxLayout, inLoopMaxPathLayout);
+				curTotalPath.remove(nextLayout);
+				curTotalScore.put(inLoopMaxLayout, curTotalScore.get(nextLayout) + Util.getConnectScore(inLoopConnectNodeList));
+				curTotalScore.remove(nextLayout);
+				inLoopMaxLayout.setBeforeLayout(nextLayout);
+				if(inLoopMaxLayoutScore == Double.MAX_VALUE && inLoopMaxLayout.getMaxConnect().size() != 0){
+					ArrayList<Node> nextMaxConnectPath = new ArrayList<>();
+					int[][] nextInput = Util.removeConnect(inLoopMaxLayout.getInput(), inLoopMaxLayout.getMaxConnect(), inLoopMaxLayout.getLength(), inLoopMaxLayout.getWidth());
+					Layout nextMaxConnectLayout = new Layout(nextInput);
+					nextMaxConnectLayout.setBeforeLayout(inLoopMaxLayout);
+					nextMaxConnectPath.addAll(inLoopMaxPathLayout);
+					nextMaxConnectPath.add(inLoopMaxLayout.getMaxConnect().get(0));
+					curTotalPath.put(nextMaxConnectLayout, nextMaxConnectPath);
+					curTotalPath.remove(inLoopMaxLayout);
+					curTotalScore.put(nextMaxConnectLayout, curTotalScore.get(inLoopMaxLayout) + Util.getConnectScore(inLoopMaxLayout.getMaxConnect()));
+					curTotalScore.remove(inLoopMaxLayout);
+					inLoopMaxLayout = nextMaxConnectLayout;
 				}
-				tempLayout = tempMax;
-				validConnectList = tempLayout.getValidConnect();
+				nextLayout = inLoopMaxLayout;
+				validConnectList = nextLayout.getValidConnect();
 			}
-			if(curTotalScore.get(tempLayout) + Util.getBonusScore(tempLayout.getCurTotalSingleCount()) > curMaxScore){
-				curMaxScore = curTotalScore.get(tempLayout) + Util.getBonusScore(tempLayout.getCurTotalSingleCount());
-				curMaxPath = curTotalPath.get(tempLayout);
-				curMaxScoreLayout = tempLayout;
+			if(curTotalScore.get(nextLayout) + Util.getBonusScore(nextLayout.getCurTotalSingleCount()) > curMaxScore){
+				curMaxScore = curTotalScore.get(nextLayout) + Util.getBonusScore(nextLayout.getCurTotalSingleCount());
+				curMaxPath = curTotalPath.get(nextLayout);
+				curMaxScoreLayout = nextLayout;
 			}
 		}
 	}
 
-	public static void main(String[] args) throws FileNotFoundException {
+	public static void main(String[] args){
 		Random ra =new Random();
 		int score = 0;
 		int count = 0;
 		Solution solution;
 		ArrayList<Integer> scoreList = new ArrayList<>();
 		int[][] input = new int[10][10];
-		for(int k = 0; k < 100; k++){
+		for(int k = 0; k < 10; k++){
 			for(int i = 0; i < 10; i++){
 				for(int j = 0; j < 10; j++){
 					input[i][j] = ra.nextInt(5) + 1;

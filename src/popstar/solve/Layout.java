@@ -1,13 +1,10 @@
 package popstar.solve;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.Scanner;
 
 import popstar.util.DotType;
 import popstar.util.LayoutScoreEnum;
@@ -234,7 +231,7 @@ public class Layout {
 		return connectDotSet;
 	}
 	
-	public static void main(String[] args) throws FileNotFoundException {
+	public static void main(String[] args){
 		
 	}
 
