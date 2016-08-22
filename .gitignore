@@ -1,7 +1,6 @@
 *.class
 *.project
 *.classpath
-SolutionDFS.java
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 
