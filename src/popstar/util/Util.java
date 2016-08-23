@@ -28,7 +28,7 @@ public class Util {
 		return res;
 	}
 	
-	public static boolean chechInput(int[][] input, int length, int width){
+	public static boolean checkInput(int[][] input, int length, int width){
 		for(int i = 0; i < length; i++){
 			for( int j = 0; j < width; j++){
 				if(DotType.getDotType(input[i][j]) == null){
