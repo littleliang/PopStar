@@ -10,7 +10,7 @@ import popstar.util.DotType;
 import popstar.util.LayoutScoreEnum;
 import popstar.util.Util;
 
-public class Layout {
+public class Layout  implements Comparable<Layout>{
 	private int[][] input;
 	private int length;
 	private int width;
@@ -32,6 +32,7 @@ public class Layout {
 	private int[] curSingleColCount;
 	private double[] curSingleColRatio;
 	private double curLayoutScore;
+	private ArrayList<Node> beforeClick;
 
 	public Layout(int[][] input){
 		this.length = input.length;
@@ -81,6 +82,14 @@ public class Layout {
 	public double getCurLayoutScore() {
 		return curLayoutScore;
 	}
+	
+	public void setBeforeClick(ArrayList<Node> beforeClick) {
+		this.beforeClick = beforeClick;
+	}
+	
+	public ArrayList<Node> getBeforeClick(){
+		return beforeClick;
+	}
 
 	private void calCurLayoutScore(){
 		if(curTotalSingleCount > curTotalConnectCount || curSingleColRatio[0] > 0.95){
@@ -100,7 +109,7 @@ public class Layout {
 			return;
 		}
 		
-		curLayoutScore = (double) (allConnectScore + Util.getBonusScore(curTotalSingleCount)) * curTotalConnectCount * expectedMaxScore / (curTotalSingleCount * curTotalCount);
+		curLayoutScore = (double) (allConnectScore + Util.getBonusScore(curTotalSingleCount)) * curTotalConnectCount / (curTotalSingleCount * curTotalCount * expectedMaxScore);
 	}
 	
 	private void getSingleDotList(List<ArrayList<Node>> connectList){
@@ -222,6 +231,17 @@ public class Layout {
 		return connectDotSet;
 	}
 	
+	@Override
+	public int compareTo(Layout o) {
+		if(curLayoutScore > o.curLayoutScore){
+			return -1;
+		}
+		else if(curLayoutScore < o.curLayoutScore){
+			return 1;
+		}
+		return 0;
+	}
+
 	public static void main(String[] args){
 		
 	}

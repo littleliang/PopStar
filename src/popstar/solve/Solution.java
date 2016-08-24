@@ -1,5 +1,6 @@
 package popstar.solve;
 
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -8,12 +9,18 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
+import java.util.Scanner;
 
+import popstar.util.LayoutScoreEnum;
 import popstar.util.Util;
 
 public class Solution {
+	private static final int levelMaxPathNum = 8;
+	private static final int levelMaxDepth = 5;
+	private static final int levelBadPathNum = 2;
+	
 	private int curMaxScore = 0;
-	private int first3StepCount = 0;
+	private int initStepCount = 0;
 	private Layout curMaxScoreLayout;
 	private Layout rootLayout;
 	private ArrayList<Node> curMaxPath = new ArrayList<Node>();
@@ -29,16 +36,16 @@ public class Solution {
 		rootLayout = layout;
 		layoutSet.add(layout);
 		curTotalScore.put(layout, 0);
-		InitFirst3Step(rootLayout, 0);
-		System.out.println("num of path: " + first3StepCount);
+		InitStep(rootLayout, 0);
+		System.out.println("num of path: " + initStepCount);
 		getMaxScore();
 		System.out.println("score: " + curMaxScore);
 		System.out.println("path: " + curMaxPath);
 	}
 	
-	private void InitFirst3Step(Layout ancestor, int layer){
-		if(layer == 3){
-			first3StepCount++;
+	private void InitStep(Layout ancestor, int layer){
+		if(layer == levelMaxDepth){
+			initStepCount++;
 			return;
 		}
 		List<ArrayList<Node>> validConnectList = ancestor.getValidConnect();
@@ -50,20 +57,39 @@ public class Solution {
 			}
 			return;
 		}
+		
+		ArrayList<Layout> layoutList = new ArrayList<Layout>();
+		
 		for(ArrayList<Node> nodeList : validConnectList){
 			int[][] nextInput = Util.removeConnect(ancestor.getInput(), nodeList, ancestor.getLength(), ancestor.getWidth());
 			Layout layout = new Layout(nextInput);
+			layout.setBeforeClick(nodeList);
+			layoutList.add(layout);
+		}
+		Collections.sort(layoutList);
+		while(layoutList.size() > levelMaxPathNum ){
+			if(layoutList.get(layoutList.size() - 1).getCurLayoutScore() > LayoutScoreEnum.singledot_fault.getScore()){
+				layoutList.remove(levelMaxPathNum - levelBadPathNum - 1);
+			}
+			else{
+				layoutList.remove(levelMaxPathNum - 1);
+			}
+			
+		}
+		for(Layout layout : layoutList){
 			layoutSet.add(layout);
-			curTotalScore.put(layout, curTotalScore.get(ancestor) + Util.getConnectScore(nodeList));
+			curTotalScore.put(layout, curTotalScore.get(ancestor) + Util.getConnectScore(layout.getBeforeClick()));
 			ArrayList<Node> pathLayout = new ArrayList<Node>();
 			if (curTotalPath.containsKey(ancestor)){
 				pathLayout.addAll(curTotalPath.get(ancestor));
 				
 			}
-			pathLayout.add(nodeList.get(0));
+			pathLayout.add(layout.getBeforeClick().get(0));
 			curTotalPath.put(layout, pathLayout);
-			InitFirst3Step(layout, layer + 1);
+			InitStep(layout, layer + 1);
 		}
+		
+		
 		layoutSet.remove(ancestor);
 		curTotalPath.remove(ancestor);
 		curTotalScore.remove(ancestor);
@@ -136,7 +162,7 @@ public class Solution {
 		Solution solution;
 		ArrayList<Integer> scoreList = new ArrayList<Integer>();
 		int[][] input = new int[10][10];
-		for(int k = 0; k < 10; k++){
+		for(int k = 0; k < 100; k++){
 			long start = System.currentTimeMillis();
 			System.out.println("case:" + (k + 1));
 			for(int i = 0; i < 10; i++){
@@ -154,5 +180,15 @@ public class Solution {
 		Collections.sort(scoreList);
 		
 		System.out.println("average score: " + score / count);
+//		Scanner scanner = new Scanner(new FileInputStream("C:/Users/suruiliang/Desktop/in"));
+//		int[][] input = new int[10][10];
+//		for(int i = 0; i < 10; i++){
+//			for(int j = 0; j < 10; j++){
+//				input[i][j] = scanner.nextInt();
+//			}
+//		}
+//		Solution solution = new Solution(new Layout(input));
+//		System.out.println(solution.curMaxScore);
+//		scanner.close();
 	}
 }
