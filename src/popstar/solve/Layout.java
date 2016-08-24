@@ -100,7 +100,7 @@ public class Layout {
 			return;
 		}
 		
-		curLayoutScore = (double) (allConnectScore + Util.getBonusScore(curTotalSingleCount)) * curTotalConnectCount / (curTotalSingleCount * curTotalCount * expectedMaxScore);
+		curLayoutScore = (double) (allConnectScore + Util.getBonusScore(curTotalSingleCount)) * curTotalConnectCount * expectedMaxScore / (curTotalSingleCount * curTotalCount);
 	}
 	
 	private void getSingleDotList(List<ArrayList<Node>> connectList){
