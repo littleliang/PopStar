@@ -16,10 +16,10 @@ public class Solution {
 	private int first3StepCount = 0;
 	private Layout curMaxScoreLayout;
 	private Layout rootLayout;
-	private ArrayList<Node> curMaxPath = new ArrayList<>();
-	private HashMap<Layout, Integer> curTotalScore = new HashMap<>();
-	private HashMap<Layout, ArrayList<Node>> curTotalPath = new HashMap<>();
-	private HashSet<Layout> layoutSet = new HashSet<>();
+	private ArrayList<Node> curMaxPath = new ArrayList<Node>();
+	private HashMap<Layout, Integer> curTotalScore = new HashMap<Layout, Integer>();
+	private HashMap<Layout, ArrayList<Node>> curTotalPath = new HashMap<Layout, ArrayList<Node>>();
+	private HashSet<Layout> layoutSet = new HashSet<Layout>();
 	
 	public Layout getCurMaxScoreLayout(){
 		return curMaxScoreLayout;
@@ -55,7 +55,7 @@ public class Solution {
 			Layout layout = new Layout(nextInput);
 			layoutSet.add(layout);
 			curTotalScore.put(layout, curTotalScore.get(ancestor) + Util.getConnectScore(nodeList));
-			ArrayList<Node> pathLayout = new ArrayList<>();
+			ArrayList<Node> pathLayout = new ArrayList<Node>();
 			if (curTotalPath.containsKey(ancestor)){
 				pathLayout.addAll(curTotalPath.get(ancestor));
 				
@@ -80,7 +80,7 @@ public class Solution {
 				double inLoopMaxLayoutScore = 0 - Double.MAX_VALUE;
 				Layout inLoopMaxLayout = null;
 				ArrayList<Node> inLoopConnectNodeList = null;
-				ArrayList<Node> inLoopMaxPathLayout = new ArrayList<>();
+				ArrayList<Node> inLoopMaxPathLayout = new ArrayList<Node>();
 				
 				for(ArrayList<Node> nodeList : validConnectList){
 					int[][] nextInput = Util.removeConnect(nextLayout.getInput(), nodeList, nextLayout.getLength(), nextLayout.getWidth());
@@ -100,7 +100,7 @@ public class Solution {
 				curTotalScore.put(inLoopMaxLayout, curTotalScore.get(nextLayout) + Util.getConnectScore(inLoopConnectNodeList));
 				curTotalScore.remove(nextLayout);
 				if(inLoopMaxLayoutScore == Double.MAX_VALUE && inLoopMaxLayout.getMaxConnect().size() != 0){
-					ArrayList<Node> nextMaxConnectPath = new ArrayList<>();
+					ArrayList<Node> nextMaxConnectPath = new ArrayList<Node>();
 					int[][] nextInput = Util.removeConnect(inLoopMaxLayout.getInput(), inLoopMaxLayout.getMaxConnect(), inLoopMaxLayout.getLength(), inLoopMaxLayout.getWidth());
 					Layout nextMaxConnectLayout = new Layout(nextInput);
 					nextMaxConnectPath.addAll(inLoopMaxPathLayout);
@@ -134,7 +134,7 @@ public class Solution {
 		int score = 0;
 		int count = 0;
 		Solution solution;
-		ArrayList<Integer> scoreList = new ArrayList<>();
+		ArrayList<Integer> scoreList = new ArrayList<Integer>();
 		int[][] input = new int[10][10];
 		for(int k = 0; k < 100; k++){
 			long start = System.currentTimeMillis();

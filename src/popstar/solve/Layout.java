@@ -14,12 +14,12 @@ public class Layout {
 	private int[][] input;
 	private int length;
 	private int width;
-	private List<ArrayList<Node>> allConnect = new ArrayList<>();
-	private List<ArrayList<Node>> validConnect = new ArrayList<>();
-	private List<ArrayList<Node>> signleDot = new ArrayList<>();
-	private ArrayList<Node> maxConnect = new ArrayList<>();
+	private List<ArrayList<Node>> allConnect = new ArrayList<ArrayList<Node>>();
+	private List<ArrayList<Node>> validConnect = new ArrayList<ArrayList<Node>>();
+	private List<ArrayList<Node>> signleDot = new ArrayList<ArrayList<Node>>();
+	private ArrayList<Node> maxConnect = new ArrayList<Node>();
 	private int curTotalSingleCount = 0;
-	private HashMap<DotType, Integer> curDotCount = new HashMap<>();
+	private HashMap<DotType, Integer> curDotCount = new HashMap<DotType, Integer>();
 	private int curTotalCount = 0;
 	private int curMaxDotCount = 0;
 	private int expectedMaxScore = 0;
@@ -192,8 +192,8 @@ public class Layout {
 		if (input[x][y] == DotType.invalid.getTypeId()){
 			return null;
 		}
-		ArrayList<Node> connectDotSet = new ArrayList<>();
-		LinkedList<Node> toConnectDotList = new LinkedList<>();
+		ArrayList<Node> connectDotSet = new ArrayList<Node>();
+		LinkedList<Node> toConnectDotList = new LinkedList<Node>();
 		visited[x][y] = true;
 		toConnectDotList.add(new Node(x, y));
 		while(!toConnectDotList.isEmpty()){

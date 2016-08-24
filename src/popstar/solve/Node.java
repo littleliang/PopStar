@@ -40,7 +40,6 @@ public class Node implements Comparable<Node>{
 			return false;
 		return true;
 	}
-	@Override
 	public int compareTo(Node o) {
 		if (this.x < o.getX()) {
 			return -1;
