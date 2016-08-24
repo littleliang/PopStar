@@ -20,6 +20,16 @@
   </dependencies>
   <build>
     <sourceDirectory>src</sourceDirectory>
+    <resources>  
+        <resource>  
+            <directory>src</directory>  
+            <includes>  
+                <include>**/*.jpg</include>    
+            </includes>  
+            <filtering>false</filtering>  
+        </resource>  
+       
+    </resources>  
     <plugins>
       <!-- to specify another jdk version (default is 1.4) -->
 			<plugin>
