@@ -1,5 +1,6 @@
 package popstar.util;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import org.opencv.core.Mat;
@@ -30,9 +31,8 @@ public class FileUtil {
 		outputArray = new int[length][width];
 		sourceMat = Highgui.imread(sourceFileName);
 		for(String tempalteFileName : templateFileNames){
-			String fileName = ClassLoader.getSystemResource("popstar/template/" + tempalteFileName).getFile();
-			System.out.println(fileName);
-			templateMat.add(Highgui.imread(fileName));
+			File txtFile = new File(ClassLoader.getSystemResource(tempalteFileName).getFile());
+			templateMat.add(Highgui.imread(txtFile.toString()));
 			Highgui.imwrite("C:/Users/suruiliang/Desktop/" + tempalteFileName, templateMat.get(templateMat.size() - 1));
 		}
 		
