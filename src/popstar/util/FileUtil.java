@@ -1,13 +1,10 @@
 package popstar.util;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
 
 public class FileUtil {
-	private String imgFileName;
+	private static final String[] templateFileNames = {"1.jpg", "2.jpg", "3.jpg", "4.jpg", "5.jpg"};
+	
+	private String sourceFileName;
 	private int length;
 	private int width;
 	private int[][] outputArray;
@@ -16,16 +13,15 @@ public class FileUtil {
 		return outputArray;
 	}
 
-	public FileUtil(String fileName, int length, int width) throws IOException{
+	public FileUtil(String sourceFileName, int length, int width){
 		this.length = length;
 		this.width = width;
-		this.imgFileName = fileName;
+		this.sourceFileName = sourceFileName;
 		outputArray = new int[length][width];
-		File file = new File(imgFileName);
-		BufferedImage bufferedImage = ImageIO.read(file);
+		
 	}
 	
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args){
 	}
 	
 	
