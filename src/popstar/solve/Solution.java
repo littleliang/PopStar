@@ -1,16 +1,14 @@
 package popstar.solve;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
-import java.util.Scanner;
 
+import popstar.util.FileUtil;
 import popstar.util.LayoutScoreEnum;
 import popstar.util.Util;
 
@@ -155,40 +153,42 @@ public class Solution {
 		}
 	}
 
-	public static void main(String[] args) throws FileNotFoundException{
-		Random ra =new Random();
-		int score = 0;
-		int count = 0;
-		Solution solution;
-		ArrayList<Integer> scoreList = new ArrayList<Integer>();
-		int[][] input = new int[10][10];
-		for(int k = 0; k < 100; k++){
-			long start = System.currentTimeMillis();
-			System.out.println("case:" + (k + 1));
-			for(int i = 0; i < 10; i++){
-				for(int j = 0; j < 10; j++){
-					input[i][j] = ra.nextInt(5) + 1;
-				}
-			}
-			solution = new Solution(new Layout(input));
-			scoreList.add(solution.curMaxScore);
-			score += solution.curMaxScore;
-			count++;
-			long end = System.currentTimeMillis();
-			System.out.println("time consume: " + (end - start));
-		}
-		Collections.sort(scoreList);
-		
-		System.out.println("average score: " + score / count);
-//		Scanner scanner = new Scanner(new FileInputStream("C:/Users/suruiliang/Desktop/in"));
+	public static void main(String[] args) throws IOException{
+//		Random ra =new Random();
+//		int score = 0;
+//		int count = 0;
+//		Solution solution;
+//		ArrayList<Integer> scoreList = new ArrayList<Integer>();
 //		int[][] input = new int[10][10];
-//		for(int i = 0; i < 10; i++){
-//			for(int j = 0; j < 10; j++){
-//				input[i][j] = scanner.nextInt();
+//		for(int k = 0; k < 100; k++){
+//			long start = System.currentTimeMillis();
+//			System.out.println("case:" + (k + 1));
+//			for(int i = 0; i < 10; i++){
+//				for(int j = 0; j < 10; j++){
+//					input[i][j] = ra.nextInt(5) + 1;
+//				}
 //			}
+//			solution = new Solution(new Layout(input));
+//			scoreList.add(solution.curMaxScore);
+//			score += solution.curMaxScore;
+//			count++;
+//			long end = System.currentTimeMillis();
+//			System.out.println("time consume: " + (end - start));
 //		}
-//		Solution solution = new Solution(new Layout(input));
-//		System.out.println(solution.curMaxScore);
-//		scanner.close();
+//		Collections.sort(scoreList);
+//		
+//		System.out.println("average score: " + score / count);
+		
+		if(args.length != 3){
+			System.err.println("Usage: <filepath> <length> <width>");
+			System.exit(1);
+		}
+		
+		int length = Integer.parseInt(args[1]);
+		int width = Integer.parseInt(args[2]);
+		
+		Solution solution = new Solution(new Layout(new FileUtil(args[0], length, width).getOutputArray()));
+		Util.arrayToFile("out", solution.rootLayout.getInput(), length, width);
+		System.out.println(solution.curMaxScore);
 	}
 }

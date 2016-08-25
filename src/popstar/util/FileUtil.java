@@ -5,6 +5,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import org.opencv.core.Core;
 import org.opencv.core.Core.MinMaxLocResult;
@@ -17,7 +20,7 @@ import org.opencv.imgproc.Imgproc;
 
 public class FileUtil {
 	private static final String[] templateFileNames = {"1.jpg", "2.jpg", "3.jpg", "4.jpg", "5.jpg"};
-	private static final String tempFileName = "C:/Users/temp.jpg";
+	private static final String tempFileName = "temp.jpg";
 	
 	static{
 		System.loadLibrary(org.opencv.core.Core.NATIVE_LIBRARY_NAME);
@@ -58,26 +61,57 @@ public class FileUtil {
 	
 	public void Process(){
 		Mat result = Mat.zeros(sourceMat.rows(), sourceMat.cols(), CvType.CV_32FC1);
-		for(Mat mat : templateMat){
-			Imgproc.matchTemplate(sourceMat, mat, result,Imgproc.TM_SQDIFF_NORMED);
-			MinMaxLocResult mlr = Core.minMaxLoc(result);
-		    Point matchLoc = mlr.minLoc;
-		    while(mlr.minVal < 0.013){
-		    	Core.rectangle(sourceMat, matchLoc, new Point(matchLoc.x + templateMat.get(0).width(),matchLoc.y + templateMat.get(0).height()), new Scalar(0,0,0), -1);
-		    	Imgproc.matchTemplate(sourceMat, mat, result,Imgproc.TM_SQDIFF_NORMED);
+		int count = 0;
+		ArrayList<CvPoint> nodeList = new ArrayList<CvPoint>();
+		while(count < length * width){
+			count++;
+			MinMaxLocResult mlr;
+			Point matchLoc = null;
+			int dotTypeValue = 0;
+			double maxScore = 0 - Double.MAX_VALUE;
+			for(int i = 0; i < templateMat.size(); i++){
+				Imgproc.matchTemplate(sourceMat, templateMat.get(i), result,Imgproc.TM_CCOEFF_NORMED);
 				mlr = Core.minMaxLoc(result);
-			    matchLoc = mlr.minLoc;
-		    }
-		    Core.rectangle(sourceMat, matchLoc, new Point(matchLoc.x + templateMat.get(0).width(),matchLoc.y + templateMat.get(0).height()), new Scalar(0,0,0), -1);
-		    Highgui.imwrite("C:/Users/suruiliang/Desktop/res.jpg",sourceMat);
+			    if(mlr.maxVal > maxScore){
+			    	maxScore = mlr.maxVal;
+			    	matchLoc = mlr.maxLoc;
+			    	dotTypeValue = i + 1;
+			    }
+			}
+			nodeList.add(new CvPoint(matchLoc, dotTypeValue));
+			Core.rectangle(sourceMat, matchLoc, new Point(matchLoc.x + templateMat.get(0).width(),matchLoc.y + templateMat.get(0).height()), new Scalar(0,0,0), -1);
 		}
-	    Highgui.imwrite("C:/Users/suruiliang/Desktop/res.jpg",sourceMat);
+		Collections.sort(nodeList, new Comparator<CvPoint>(){
+
+			@Override
+			public int compare(CvPoint o1, CvPoint o2) {
+				if(o1.getX() < o2.getX())
+					return -1;
+				else if(o1.getX() > o2.getX())
+					return 1;
+				else
+					return 0;
+			}
+			
+		});
+		for(int i = 0; i < width; i++){
+			List<CvPoint> sortList = nodeList.subList(i * length, (i + 1) * length);
+			Collections.sort(sortList, new Comparator<CvPoint>(){
+
+				@Override
+				public int compare(CvPoint o1, CvPoint o2) {
+					if(o1.getY() < o2.getY())
+						return -1;
+					else if(o1.getY() > o2.getY())
+						return 1;
+					else
+						return 0;
+				}
+				
+			});
+			for(int j = 0; j < length; j++){
+				outputArray[j][i] = sortList.get(j).geDotType().getTypeId();
+			}
+		}
 	}
-	
-	public static void main(String[] args) throws IOException{
-		FileUtil fileUtil = new FileUtil("C:/Users/suruiliang/Desktop/test.jpg", 10, 10);
-		System.out.println(fileUtil);
-	}
-	
-	
 }

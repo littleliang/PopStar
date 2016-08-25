@@ -1,5 +1,9 @@
 package popstar.util;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import popstar.solve.Node;
@@ -47,6 +51,17 @@ public class Util {
 			}
 			System.out.println();
 		}
+	}
+	
+	public static void arrayToFile(String filename, int[][] input, int length, int width) throws IOException{
+		BufferedWriter bw = new BufferedWriter(new FileWriter(new File(filename)));
+		for(int i = 0; i < length; i++){
+			for( int j = 0; j < width; j++){
+					bw.append(input[i][j] + "\t");
+			}
+			bw.append("\n");
+		}
+		bw.close();
 	}
 	
 	public static int getBonusScore(int count){
